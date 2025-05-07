@@ -11,6 +11,15 @@ const jokesPerPage = 5
 // ratings = { [id]: valor }
 const ratings = ref({})
 
+// Mensaje de toast
+const toastMessage = ref('')
+
+// Función para mostrar toast
+const showToast = (msg) => {
+    toastMessage.value = msg
+    setTimeout(() => toastMessage.value = '', 3000)
+}
+
 // Cargar ratings desde localStorage
 onMounted(() => {
     fetchJokes()
@@ -72,6 +81,10 @@ const addJoke = () => {
 }
 
 const deleteJoke = (id) => {
+    // confirmación
+    if (!window.confirm('¿Estás seguro de que quieres eliminar este chiste?')) {
+        return
+    }
     jokes.value = jokes.value.filter(j => j.id !== id)
 
     // Eliminar rating si existe
@@ -81,11 +94,12 @@ const deleteJoke = (id) => {
     const customJokes = JSON.parse(localStorage.getItem('custom_jokes')) || []
     const updated = customJokes.filter(j => j.id !== id)
     localStorage.setItem('custom_jokes', JSON.stringify(updated))
+    showToast('Chiste eliminado 🗑️')
 }
 </script>
 
 <template>
-    <div>
+    <div class="mx-auto w-1/2">
         <h1>Chistes</h1>
 
         <label>Ordenar por:</label>
@@ -93,6 +107,10 @@ const deleteJoke = (id) => {
             <option value="id">ID</option>
             <option value="type">Tipo</option>
         </select>
+
+        <div v-if="toastMessage" class="fixed top-4 right-4 bg-gray-800 text-white px-4 py-2 rounded shadow">
+            {{ toastMessage }}
+        </div>
 
         <h2>Agregar un nuevo chiste</h2>
         <form @submit.prevent="addJoke" style="margin-bottom: 2rem;">
@@ -111,10 +129,10 @@ const deleteJoke = (id) => {
             <button type="submit">Agregar</button>
         </form>
 
-        <div v-for="joke in paginatedJokes" :key="joke.id">
+        <template v-for="joke in paginatedJokes" :key="joke.id">
             <JokeCard :joke="joke" :rating="ratings[joke.id] || 0" @update-rating="setRating(joke.id, $event)"
                 @delete-joke="deleteJoke" />
-        </div>
+        </template>
 
         <Pagination :current-page="currentPage" :total-pages="totalPages" @page-change="goToPage" />
     </div>

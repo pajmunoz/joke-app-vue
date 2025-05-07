@@ -1,15 +1,25 @@
 <template>
-    <div style="border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem;">
-        <p><strong>{{ joke.setup }}</strong></p>
-        <p>{{ joke.punchline }}</p>
-        <small>Tipo: {{ joke.type }}</small>
-
-        <div style="margin-top: 0.5rem;">
-            <Rating v-model="localRating" />
-            <p>Tu calificación: {{ localRating }}/5</p>
+    <div class="max-w-2xl px-8 py-4 my-4 bg-white rounded-lg shadow-md ">
+        <div class="flex items-center justify-between">
+            <span class="text-sm font-light text-gray-600">Tipo: {{ joke.type }}</span>
+            <button
+                class="px-3 py-1 text-sm font-bold text-gray-600 transition-colors duration-300 transform bg-gray-100 rounded cursor-pointer hover:bg-gray-200"
+                @click="emit('delete-joke', joke.id)">Eliminar</button>
         </div>
+
+        <div class="mt-2">
+            <p class="text-xl font-bold text-gray-700  hover:text-gray-600  hover:underline">{{ joke.setup }}</p>
+            <p class="mt-2 text-gray-600 ">{{ joke.punchline }}</p>
+        </div>
+
+        <div class="flex items-center justify-between mt-4">
+            <Rating v-model="localRating" />
+            <p class="font-bold text-gray-700 cursor-pointer" tabindex="0" role="link">Tu calificación: {{
+                localRating }}/5</p>
+        </div>
+
     </div>
-    <button @click="emit('delete-joke', joke.id)" style="margin-top: 1rem;">Eliminar</button>
+
 </template>
 
 <script setup>
