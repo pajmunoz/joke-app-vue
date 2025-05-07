@@ -1,5 +1,23 @@
-# Vue 3 + TypeScript + Vite
+# 🃏 Chistes App – Vite + Vue 3 + TypeScript
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Una aplicación de chistes construida con Vue 3, Vite y TypeScript. Consume una API local que entrega chistes, permite ordenarlos, paginarlos, calificarlos, agregarlos o eliminarlos, y guarda los cambios en `localStorage`.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+---
+
+## 🚀 Deploy
+
+🔗 **App en producción**:  
+[https://pajmunoz.github.io/joke-app-vue/](https://pajmunoz.github.io/joke-app-vue/)
+
+---
+
+## ⚙️ Requisitos
+
+1. Clona y levanta el servidor de chistes local desde este repositorio:  
+   👉 [https://github.com/15Dkatz/official_joke_api](https://github.com/15Dkatz/official_joke_api)
+
+2. Asegúrate de que el servidor esté corriendo en el puerto **`3005`**:
+
+```bash
+npm install
+npm start
