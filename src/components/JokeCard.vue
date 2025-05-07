@@ -14,7 +14,7 @@
 
         <div class="flex items-center justify-between mt-4">
             <Rating v-model="localRating" />
-            <p class="font-bold text-gray-700 cursor-pointer" tabindex="0" role="link">Tu calificación: {{
+            <p class="font-bold text-gray-700" tabindex="0" role="link">Tu calificación: {{
                 localRating }}/5</p>
         </div>
 

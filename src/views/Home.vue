@@ -3,12 +3,15 @@ import { ref, computed, onMounted, watch } from 'vue'
 import JokeCard from '../components/JokeCard.vue'
 import Pagination from '../components/Pagination.vue'
 import AddJoke from '../components/AddJoke.vue'
+import ConfirmModal from '../components/ConfirmModal.vue'
 
 const jokes = ref([])
 const sortKey = ref('id')
 const currentPage = ref(1)
 const jokesPerPage = 5
 const modaIsVisible = ref(false)
+const showConfirmModal = ref(false)
+const jokeToDelete = ref(null)
 
 // ratings = { [id]: valor }
 const ratings = ref({})
@@ -82,6 +85,23 @@ const addJoke = (joke) => {
     showToast('Chiste agregado 🎉')
 }
 
+const askDeleteJoke = (id) => {
+    jokeToDelete.value = id
+    showConfirmModal.value = true
+}
+
+const confirmDelete = () => {
+    const id = jokeToDelete.value
+    jokes.value = jokes.value.filter(j => j.id !== id)
+    delete ratings.value[id]
+
+    const custom = JSON.parse(localStorage.getItem('custom_jokes')) || []
+    const updated = custom.filter(j => j.id !== id)
+    localStorage.setItem('custom_jokes', JSON.stringify(updated))
+
+    showConfirmModal.value = false
+    showToast('Chiste eliminado 🗑️')
+}
 
 const deleteJoke = (id) => {
     // confirmación
@@ -104,7 +124,7 @@ const deleteJoke = (id) => {
 <template>
     <div class="sm:w-2xl mx-auto ">
         <div class="px-8">
-            <h1 class="font-mono text-6xl text-center my-16">Chistes</h1>
+            <h1 class="font-mono text-6xl text-center py-16 underline">Chistes</h1>
             <div class="w-full my-4">
                 <label>Ordenar por:</label>
                 <select v-model="sortKey">
@@ -127,9 +147,11 @@ const deleteJoke = (id) => {
         </template>
         <template v-for="joke in paginatedJokes" :key="joke.id">
             <JokeCard :joke="joke" :rating="ratings[joke.id] || 0" @update-rating="setRating(joke.id, $event)"
-                @delete-joke="deleteJoke" />
+                @delete-joke="askDeleteJoke" />
         </template>
 
         <Pagination :current-page="currentPage" :total-pages="totalPages" @page-change="goToPage" />
     </div>
+    <ConfirmModal :show="showConfirmModal" message="¿Seguro que deseas eliminar este chiste?" @confirm="confirmDelete"
+        @cancel="showConfirmModal = false" />
 </template>
