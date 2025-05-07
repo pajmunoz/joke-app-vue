@@ -1,8 +1,10 @@
 <template>
-<div @click="handleClose" class="with-full h-full fixed inset-0 z-0 overflow-y-auto bg-gray-900 bg-opacity-50 transition-opacity ease-out duration-300 opacity-70"></div>
+    <div @click="handleClose"
+        class="with-full h-full fixed inset-0 overflow-y-auto bg-gray-900 bg-opacity-50 transition-opacity ease-out duration-300 opacity-70">
+    </div>
     <div class="relative flex justify-center">
         <div
-            class="sm:fixed sm:w-1/2 relative w-full right-auto inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-gray-100 rounded-lg shadow-xl rtl:text-right sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
+            class="sm:fixed relative w-full right-auto inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-gray-100 rounded-lg shadow-xl rtl:text-right sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
             <div>
 
 
@@ -12,16 +14,21 @@
                     <div class="mt-2 text-sm text-gray-500 ">
                         <form @submit.prevent="handleSubmit">
                             <div class="mb-4">
-                                <label>Desarrollo: </label>
-                                <input v-model="localJoke.setup" required />
+                                <label class="text-gray-700" for="setup">Desarrollo: </label>
+                                <input v-model="localJoke.setup" required id="setup" type="text"
+                                    class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
+
                             </div>
                             <div class="mb-4">
-                                <label>Chiste: </label>
-                                <input v-model="localJoke.punchline" required />
+                                <label class="text-gray-700" for="punchline">Chiste: </label>
+                                <input v-model="localJoke.punchline" required id="punchline" type="text"
+                                    class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                             <div class="mb-4">
-                                <label>Tipo: </label>
-                                <input v-model="localJoke.type" placeholder="general/programming/etc" required />
+                                <label class="text-gray-700" for="type">Tipo: </label>
+                                <input v-model="localJoke.type" required id="type" type="text"
+                                    placeholder="general/programming/etc"
+                                    class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring">
                             </div>
                             <div class="mt-5 sm:flex sm:items-center sm:justify-between">
 
@@ -62,6 +69,7 @@ const localJoke = ref({
 const handleSubmit = () => {
     emit('add', { ...localJoke.value })
     localJoke.value = { setup: '', punchline: '', type: '' }
+    emit('hideModal')
 }
 const handleClose = () => {
     emit('hideModal')

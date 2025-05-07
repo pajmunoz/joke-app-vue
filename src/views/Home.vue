@@ -102,23 +102,26 @@ const deleteJoke = (id) => {
 </script>
 
 <template>
-    <div class="w-2xl mx-auto ">
-        <h1>Chistes</h1>
-        <div class="w-full my-4">
-            <label>Ordenar por:</label>
-            <select v-model="sortKey">
-                <option value="id">ID</option>
-                <option value="type">Tipo</option>
-            </select>
-        </div>
+    <div class="sm:w-2xl mx-auto ">
+        <div class="px-8">
+            <h1 class="font-mono text-6xl text-center my-16">Chistes</h1>
+            <div class="w-full my-4">
+                <label>Ordenar por:</label>
+                <select v-model="sortKey">
+                    <option value="id">ID</option>
+                    <option value="type">Tipo</option>
+                </select>
+            </div>
 
-        <div v-if="toastMessage" class="fixed top-0 right-0 bg-gray-800 text-white px-4 py-2 rounded shadow">
-            {{ toastMessage }}
+            <div v-if="toastMessage" class="fixed top-0 right-0 bg-gray-800 text-white px-4 py-2 rounded shadow">
+                {{ toastMessage }}
+            </div>
+
+            <button @click="showModal"
+                class="px-6 py-2 font-small cursor-pointer tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                Agregar chiste
+            </button>
         </div>
-        <button @click="showModal"
-            class="px-6 py-2 font-small cursor-pointer tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
-            Agregar chiste
-        </button>
         <template v-if="modaIsVisible === true">
             <AddJoke @add="addJoke" @hideModal="hideModal" />
         </template>

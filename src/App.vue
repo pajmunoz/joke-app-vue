@@ -4,7 +4,6 @@ import './style.css';
 </script>
 
 <template>
-  <h1 class="text-xl">Joke app</h1>
   <Home />
 </template>
 
