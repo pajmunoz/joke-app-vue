@@ -1,23 +1,5 @@
-<template>
-    <div>
-        <h1>Chistes</h1>
-
-        <label>Ordenar por:</label>
-        <select v-model="sortKey">
-            <option value="id">ID</option>
-            <option value="type">Tipo</option>
-        </select>
-
-        <div v-for="joke in paginatedJokes" :key="joke.id">
-            <JokeCard :joke="joke" />
-        </div>
-
-        <Pagination :current-page="currentPage" :total-pages="totalPages" @page-change="goToPage" />
-    </div>
-</template>
-
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import JokeCard from '../components/JokeCard.vue'
 import Pagination from '../components/Pagination.vue'
 
@@ -26,13 +8,25 @@ const sortKey = ref('id')
 const currentPage = ref(1)
 const jokesPerPage = 5
 
+// ratings = { [id]: valor }
+const ratings = ref({})
+
+// Cargar ratings desde localStorage
+onMounted(() => {
+    fetchJokes()
+    const stored = localStorage.getItem('joke_ratings')
+    if (stored) ratings.value = JSON.parse(stored)
+})
+
+watch(ratings, (newVal) => {
+    localStorage.setItem('joke_ratings', JSON.stringify(newVal))
+}, { deep: true })
+
 const fetchJokes = async () => {
-    const res = await fetch('http://localhost:3005/jokes/ten')
+    const res = await fetch('https://official-joke-api.appspot.com/jokes/ten')
     const data = await res.json()
     jokes.value = data
 }
-
-onMounted(fetchJokes)
 
 const sortedJokes = computed(() =>
     [...jokes.value].sort((a, b) => {
@@ -53,4 +47,26 @@ const paginatedJokes = computed(() => {
 const goToPage = (page) => {
     currentPage.value = page
 }
+
+const setRating = (id, value) => {
+    ratings.value[id] = value
+}
 </script>
+
+<template>
+    <div>
+        <h1>Chistes</h1>
+
+        <label>Ordenar por:</label>
+        <select v-model="sortKey">
+            <option value="id">ID</option>
+            <option value="type">Tipo</option>
+        </select>
+
+        <div v-for="joke in paginatedJokes" :key="joke.id">
+            <JokeCard :joke="joke" :rating="ratings[joke.id] || 0" @update-rating="setRating(joke.id, $event)" />
+        </div>
+
+        <Pagination :current-page="currentPage" :total-pages="totalPages" @page-change="goToPage" />
+    </div>
+</template>
