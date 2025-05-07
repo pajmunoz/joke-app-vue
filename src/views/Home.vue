@@ -23,9 +23,9 @@ watch(ratings, (newVal) => {
 }, { deep: true })
 
 const fetchJokes = async () => {
-    const res = await fetch('https://official-joke-api.appspot.com/jokes/ten')
+    const res = await fetch('http://localhost:3005/jokes/ten')
     const data = await res.json()
-    jokes.value = data
+    jokes.value = [...(JSON.parse(localStorage.getItem('custom_jokes')) || []), ...data]
 }
 
 const sortedJokes = computed(() =>
@@ -51,6 +51,25 @@ const goToPage = (page) => {
 const setRating = (id, value) => {
     ratings.value[id] = value
 }
+
+const newJoke = ref({
+    setup: '',
+    punchline: '',
+    type: ''
+})
+
+const addJoke = () => {
+    const id = Date.now()
+    const newEntry = { id, ...newJoke.value }
+    jokes.value.unshift(newEntry)
+
+    // guardar en localStorage
+    const saved = JSON.parse(localStorage.getItem('custom_jokes')) || []
+    saved.unshift(newEntry)
+    localStorage.setItem('custom_jokes', JSON.stringify(saved))
+
+    newJoke.value = { setup: '', punchline: '', type: '' }
+}
 </script>
 
 <template>
@@ -62,6 +81,23 @@ const setRating = (id, value) => {
             <option value="id">ID</option>
             <option value="type">Tipo</option>
         </select>
+
+        <h2>Agregar un nuevo chiste</h2>
+        <form @submit.prevent="addJoke" style="margin-bottom: 2rem;">
+            <div>
+                <label>Setup:</label>
+                <input v-model="newJoke.setup" required />
+            </div>
+            <div>
+                <label>Punchline:</label>
+                <input v-model="newJoke.punchline" required />
+            </div>
+            <div>
+                <label>Tipo:</label>
+                <input v-model="newJoke.type" placeholder="general/programming/etc" required />
+            </div>
+            <button type="submit">Agregar</button>
+        </form>
 
         <div v-for="joke in paginatedJokes" :key="joke.id">
             <JokeCard :joke="joke" :rating="ratings[joke.id] || 0" @update-rating="setRating(joke.id, $event)" />
