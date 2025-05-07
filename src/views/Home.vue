@@ -2,11 +2,13 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import JokeCard from '../components/JokeCard.vue'
 import Pagination from '../components/Pagination.vue'
+import AddJoke from '../components/AddJoke.vue'
 
 const jokes = ref([])
 const sortKey = ref('id')
 const currentPage = ref(1)
 const jokesPerPage = 5
+const modaIsVisible = ref(false)
 
 // ratings = { [id]: valor }
 const ratings = ref({})
@@ -18,6 +20,13 @@ const toastMessage = ref('')
 const showToast = (msg) => {
     toastMessage.value = msg
     setTimeout(() => toastMessage.value = '', 3000)
+}
+
+const showModal = () => {
+    modaIsVisible.value = true
+}
+const hideModal = () => {
+    modaIsVisible.value = false
 }
 
 // Cargar ratings desde localStorage
@@ -60,25 +69,19 @@ const goToPage = (page) => {
 const setRating = (id, value) => {
     ratings.value[id] = value
 }
-
-const newJoke = ref({
-    setup: '',
-    punchline: '',
-    type: ''
-})
-
-const addJoke = () => {
+const addJoke = (joke) => {
     const id = Date.now()
-    const newEntry = { id, ...newJoke.value }
+    const newEntry = { id, ...joke }
     jokes.value.unshift(newEntry)
 
-    // guardar en localStorage
+    // Guardar en localStorage
     const saved = JSON.parse(localStorage.getItem('custom_jokes')) || []
     saved.unshift(newEntry)
     localStorage.setItem('custom_jokes', JSON.stringify(saved))
 
-    newJoke.value = { setup: '', punchline: '', type: '' }
+    showToast('Chiste agregado 🎉')
 }
+
 
 const deleteJoke = (id) => {
     // confirmación
@@ -99,36 +102,26 @@ const deleteJoke = (id) => {
 </script>
 
 <template>
-    <div class="mx-auto w-1/2">
+    <div class="w-2xl mx-auto ">
         <h1>Chistes</h1>
-
-        <label>Ordenar por:</label>
-        <select v-model="sortKey">
-            <option value="id">ID</option>
-            <option value="type">Tipo</option>
-        </select>
-
-        <div v-if="toastMessage" class="fixed top-4 right-4 bg-gray-800 text-white px-4 py-2 rounded shadow">
-            {{ toastMessage }}
+        <div class="w-full my-4">
+            <label>Ordenar por:</label>
+            <select v-model="sortKey">
+                <option value="id">ID</option>
+                <option value="type">Tipo</option>
+            </select>
         </div>
 
-        <h2>Agregar un nuevo chiste</h2>
-        <form @submit.prevent="addJoke" style="margin-bottom: 2rem;">
-            <div>
-                <label>Setup:</label>
-                <input v-model="newJoke.setup" required />
-            </div>
-            <div>
-                <label>Punchline:</label>
-                <input v-model="newJoke.punchline" required />
-            </div>
-            <div>
-                <label>Tipo:</label>
-                <input v-model="newJoke.type" placeholder="general/programming/etc" required />
-            </div>
-            <button type="submit">Agregar</button>
-        </form>
-
+        <div v-if="toastMessage" class="fixed top-0 right-0 bg-gray-800 text-white px-4 py-2 rounded shadow">
+            {{ toastMessage }}
+        </div>
+        <button @click="showModal"
+            class="px-6 py-2 font-small cursor-pointer tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+            Agregar chiste
+        </button>
+        <template v-if="modaIsVisible === true">
+            <AddJoke @add="addJoke" @hideModal="hideModal" />
+        </template>
         <template v-for="joke in paginatedJokes" :key="joke.id">
             <JokeCard :joke="joke" :rating="ratings[joke.id] || 0" @update-rating="setRating(joke.id, $event)"
                 @delete-joke="deleteJoke" />
