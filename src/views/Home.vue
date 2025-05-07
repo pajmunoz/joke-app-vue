@@ -44,7 +44,7 @@ watch(ratings, (newVal) => {
 }, { deep: true })
 
 const fetchJokes = async () => {
-    const res = await fetch('http://localhost:3005/jokes/ten')
+    const res = await fetch(`${import.meta.env.VITE_API_URL}jokes/ten`)
     const data = await res.json()
     jokes.value = [...(JSON.parse(localStorage.getItem('custom_jokes')) || []), ...data]
 }
