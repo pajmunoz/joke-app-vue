@@ -70,6 +70,18 @@ const addJoke = () => {
 
     newJoke.value = { setup: '', punchline: '', type: '' }
 }
+
+const deleteJoke = (id) => {
+    jokes.value = jokes.value.filter(j => j.id !== id)
+
+    // Eliminar rating si existe
+    delete ratings.value[id]
+
+    // Si era un chiste agregado por el usuario, también borrarlo del localStorage
+    const customJokes = JSON.parse(localStorage.getItem('custom_jokes')) || []
+    const updated = customJokes.filter(j => j.id !== id)
+    localStorage.setItem('custom_jokes', JSON.stringify(updated))
+}
 </script>
 
 <template>
@@ -100,7 +112,8 @@ const addJoke = () => {
         </form>
 
         <div v-for="joke in paginatedJokes" :key="joke.id">
-            <JokeCard :joke="joke" :rating="ratings[joke.id] || 0" @update-rating="setRating(joke.id, $event)" />
+            <JokeCard :joke="joke" :rating="ratings[joke.id] || 0" @update-rating="setRating(joke.id, $event)"
+                @delete-joke="deleteJoke" />
         </div>
 
         <Pagination :current-page="currentPage" :total-pages="totalPages" @page-change="goToPage" />

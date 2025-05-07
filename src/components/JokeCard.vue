@@ -9,6 +9,7 @@
             <p>Tu calificación: {{ localRating }}/5</p>
         </div>
     </div>
+    <button @click="emit('delete-joke', joke.id)" style="margin-top: 1rem;">Eliminar</button>
 </template>
 
 <script setup>
@@ -21,7 +22,7 @@ const props = defineProps({
     rating: Number
 })
 
-const emit = defineEmits(['update-rating'])
+const emit = defineEmits(['update-rating', 'delete-joke'])
 const localRating = ref(props.rating)
 
 watch(localRating, (value) => {
