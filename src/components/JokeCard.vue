@@ -8,7 +8,7 @@
         </div>
 
         <div class="mt-2">
-            <p class="text-xl font-bold text-gray-700  hover:text-gray-600  hover:underline">{{ joke.setup }}</p>
+            <p class="text-xl font-bold text-gray-700">{{ joke.setup }}</p>
             <p class="mt-2 text-gray-600 ">{{ joke.punchline }}</p>
         </div>
 
